@@ -38,6 +38,8 @@ type kingpinParser struct {
 	printSpec *nullableString
 	noPrint   bool
 
+	proxy string
+
 	formatSpec string
 }
 
@@ -158,6 +160,9 @@ func newKingpinParser() argsParser {
 		Short('q').
 		BoolVar(&kparser.noPrint)
 
+	app.Flag("proxy", "Proxy list, separate by ,").
+		StringVar(&kparser.proxy)
+
 	app.Flag("format", "Which format to use to output the result. "+
 		"<spec> is either a name (or its shorthand) of some format "+
 		"understood by bombardier or a path to the user-defined template, "+
@@ -221,6 +226,7 @@ func (k *kingpinParser) parse(args []string) (config, error) {
 		printProgress:  pp,
 		printResult:    pr,
 		format:         format,
+		proxy:          k.proxy,
 	}, nil
 }
 

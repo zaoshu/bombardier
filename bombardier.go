@@ -12,7 +12,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/codesenberg/bombardier/internal"
+	"github.com/zaoshu/bombardier/internal"
 
 	"github.com/cheggaaa/pb"
 	fhist "github.com/codesenberg/concurrent/float64/histogram"
@@ -138,6 +138,7 @@ func newBombardier(c config) (*bombardier, error) {
 		bodProd:      bsp,
 		bytesRead:    &b.bytesRead,
 		bytesWritten: &b.bytesWritten,
+		proxy:        c.proxy,
 	}
 	b.client = makeHTTPClient(c.clientType, cc)
 

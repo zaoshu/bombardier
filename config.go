@@ -28,6 +28,8 @@ type config struct {
 	printIntro, printProgress, printResult bool
 
 	format format
+
+	proxy string
 }
 
 type testTyp int

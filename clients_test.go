@@ -179,3 +179,11 @@ func TestHTTP1Clients(t *testing.T) {
 		}
 	}
 }
+
+func TestRandomProxy(t *testing.T) {
+	p := randomProxy("1.1.1.1,2.2.2.2,3.3.3.3")
+
+	for i := 0; i < 6; i++ {
+		t.Log(p(nil))
+	}
+}

@@ -34,6 +34,8 @@ type clientOpts struct {
 	bodProd bodyStreamProducer
 
 	bytesRead, bytesWritten *int64
+
+	proxy string
 }
 
 type fasthttpClient struct {
@@ -113,9 +115,31 @@ type httpClient struct {
 	bodProd bodyStreamProducer
 }
 
+func randomProxy(proxy string) func(*http.Request) (*url.URL, error) {
+	var proxyURL []*url.URL
+	for _, p := range strings.Split(proxy, ",") {
+		u, err := url.Parse(p)
+		if err != nil {
+			panic(err)
+		}
+		proxyURL = append(proxyURL, u)
+	}
+
+	index := 0
+	return func(req *http.Request) (*url.URL, error) {
+		if len(proxyURL) == 0 {
+			return nil, nil
+		}
+		u := proxyURL[index]
+		index = (index + 1) % len(proxyURL)
+		return u, nil
+	}
+}
+
 func newHTTPClient(opts *clientOpts) client {
 	c := new(httpClient)
 	tr := &http.Transport{
+		Proxy:               randomProxy(opts.proxy),
 		TLSClientConfig:     opts.tlsConfig,
 		MaxIdleConnsPerHost: int(opts.maxConns),
 	}
